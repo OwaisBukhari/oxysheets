@@ -7,6 +7,7 @@ import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Environment;
+import android.os.Handler;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -32,6 +33,7 @@ public class MainActivity extends AppCompatActivity {
     EditText etName,etPhone,etAddress;
     Button btnInsert;
     ProgressDialog progressDialog;
+    private Handler mHandler = new Handler();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -50,21 +52,51 @@ public class MainActivity extends AppCompatActivity {
         btnInsert.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                try {
+
+                Runnable SheetAuto = new Runnable() {
+                    @Override
+                    public void run() {
+                        try {
+                            addStudentData();
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
+
+                        mHandler.postDelayed(this,1000);
+
+
+                    }
+                };
+
+                SheetAuto.run();
+
+
+
+
+               /* try {
                     addStudentData();
                 } catch (IOException e) {
                     e.printStackTrace();
-                }
+                }*/
                 progressDialog.show();
             }
         });
     }
 
-    public void addStudentData() throws IOException {
-        String sName = "lllll";
-       String sPhone =LogsUtil.readLogs().toString();
 
-        String sAddress=etAddress.getText().toString();
+
+    public void addStudentData() throws IOException {
+
+
+       String sPhone =LogsUtil.readLogs().toString();
+       String sName= sPhone.substring(149,152);
+
+
+
+
+
+
+        String sAddress=sPhone.substring(156,159);
         StringRequest stringRequest = new StringRequest(Request.Method.POST, "https://script.google.com/macros/s/AKfycbxUUzTlmlMjEC83gnJLsaSodFUL_Oig8xEkGJFtFEpcoroniEvyFpOiMTUJXxnt0lT8RQ/exec", new Response.Listener<String>() {
             @Override
             public void onResponse(String response) {
